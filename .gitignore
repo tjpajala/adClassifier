@@ -1,0 +1,5 @@
+ad_labeling/
+data/
+.idea/
+notebooks/.ipynb_checkpoints/
+adClassifier/__pycache__/

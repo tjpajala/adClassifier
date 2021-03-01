@@ -1,0 +1,55 @@
+preprocessing:
+  data_folder: /Users/tjpajala/PycharmProjects/adClassifier/data
+  seed: 42
+  test_percent_size: 0.33
+  completions_folder: /Users/tjpajala/PycharmProjects/adClassifier/ad_labeling/completions
+labeling_functions:
+  data_folder: /Users/tjpajala/PycharmProjects/adClassifier/data
+  metrics_folder: metrics_data
+  seed: 125
+  # labeling functions need to be the same string as the variable name in labeling_functions.py
+  lfs: ["lf_mentions_trump",
+        "lf_mentions_maga",
+        "lf_mentions_ivanka",
+        "lf_mentions_bidenharris",
+        "lf_mentions_joebiden",
+        "lf_mentions_dumptrump",
+        "lf_mentions_voteblue",
+        "lf_mentions_breitbart",
+        "lf_mentions_fascis",
+        "lf_mentions_socialis",
+        "lf_mentions_mcenany",
+        "lf_mentions_kayleigh",
+        "lf_mentions_forever44",
+        "lf_mentions_supremacis",
+        "lf_mentions_americafirst",
+        "lf_mentions_kag",
+        "lf_mentions_melania",
+        "lf_mentions_barron",
+        "lf_mentions_amen",
+        "lf_mentions_flotus",
+        "lf_mentions_firstcouple",
+        "lf_mentions_silent_majority",
+        "lf_mentions_joerogan",
+        "lf_mentions_crook",
+        "lf_mentions_healthcare",
+        "lf_mentions_warren",
+        "lf_mentions_sanders",
+        "lf_mentions_obama",
+        "lf_mentions_tiffany",
+        "lf_mentions_tpusa",
+        "lf_mentions_biden",
+        "lf_mentions_trump2020",
+        "lf_mentions_patriot",
+        "lf_mentions_planned_parenthood",
+        "lf_mentions_leftist",
+        "textblob_polarity"
+  ]
+  n_epochs: 500
+  log_freq: 100
+  n_estimators: 100
+  class_weight: balanced_subsample
+notebook:
+  data_folder: data
+  metrics_folder: metrics_data
+  scores_file: all_runs.json

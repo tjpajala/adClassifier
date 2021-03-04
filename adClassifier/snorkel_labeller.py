@@ -113,8 +113,8 @@ probs_train = label_model.predict_proba(L_train)
 
 
 # save df_train labelmodel predicts for visualization
-df_train["proba"] = probs_train[:, 1]
-df_train["predicted_Lmodel"] = probs_to_preds(probs=probs_train)
+df_train["prob"] = probs_train[:, 1]
+df_train["predicted_label"] = probs_to_preds(probs=probs_train)
 
 
 label_model_acc = label_model.score(L=L_test, Y=Y_test, tie_break_policy="random")[
@@ -161,8 +161,8 @@ precision, recall, thresholds = precision_recall_curve(Y_test, prob_predictions)
 auc = metrics.auc(recall, precision)
 print("Test score AUC: {}".format(auc))
 
-df_train.to_parquet(DATA_FOLDER / "df_train_labeled.parquet.gzip", compression="gzip")
-df_test.to_parquet(DATA_FOLDER / "df_test_labeled.parquet.gzip", compression="gzip")
+df_train[["id","predicted_label","prob"]].to_parquet(DATA_FOLDER / "df_train_labeled.parquet.gzip", compression="gzip")
+df_test[["id","predicted_label","prob"]].to_parquet(DATA_FOLDER / "df_test_labeled.parquet.gzip", compression="gzip")
 
 
 # log metrics and params to mlflow

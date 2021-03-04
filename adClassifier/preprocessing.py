@@ -9,7 +9,7 @@ import json
 from tqdm import tqdm
 from collections import Counter
 
-sys.path.append(os.path.relpath(".."))
+sys.path.append(os.path.relpath("."))
 from adClassifier.utils import get_img_from_html
 
 params = yaml.safe_load(open('adClassifier/params.yaml'))['preprocessing']
@@ -43,8 +43,8 @@ print("Completion distribution: \n{}".format(Counter(completions.values())))
 
 
 print("{} rows when beginning filtering.".format(len(df)))
-ids_to_drop = [k for k in completions.keys() if completions[k]=="Drop"]
-print("Dropping {} obs as label is Drop".format(len(ids_to_drop)))
+ids_to_drop = [k for k in completions.keys() if completions[k] in ["Drop","Neutral"]]
+print("Dropping {} obs as label is Drop or Neutral".format(len(ids_to_drop)))
 df = df[~df.id.isin(ids_to_drop)]
 print("{} rows after filtering.".format(len(df)))
 
@@ -101,15 +101,3 @@ print("Classes in test: \n{}".format(df_test.message_label.value_counts()))
 df.to_parquet(DATA_FOLDER / "df.parquet.gzip", compression="gzip")
 df_train.to_parquet(DATA_FOLDER / "df_train.parquet.gzip", compression="gzip")
 df_test.to_parquet(DATA_FOLDER / "df_test.parquet.gzip", compression="gzip")
-
-
-# make HDF store
-store = pd.HDFStore(DATA_FOLDER / "preprocessed_data.h5")
-store["df"] = df
-store["train"] = df_train
-store["test"] = df_test
-#store["X_train"] = X_train
-#store["X_test"] = X_test
-#store["y_train"] = y_train
-#store["y_test"] = y_test
-store.close()

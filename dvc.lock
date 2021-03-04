@@ -1,0 +1,32 @@
+schema: '2.0'
+stages:
+  preprocessing:
+    cmd: python adClassifier/preprocessing.py
+    deps:
+    - path: adClassifier/preprocessing.py
+      md5: e73571d2db2edce42a3893810d14572f
+      size: 4491
+    - path: ad_labeling/completions
+      md5: 451f0a094b7f2adc211e946bcf588bcd.dir
+      size: 188685
+      nfiles: 141
+    - path: data/en-US.csv.gz
+      md5: 91db71fcf9e67d01771973f2593d24ef
+      size: 321141053
+    params:
+      adClassifier/params.yaml:
+        preprocessing:
+          data_folder: /Users/tjpajala/PycharmProjects/adClassifier/data
+          seed: 42
+          test_percent_size: 0.33
+          completions_folder: /Users/tjpajala/PycharmProjects/adClassifier/ad_labeling/completions
+    outs:
+    - path: data/df.parquet.gzip
+      md5: 59185a8d11e75a7636040e14e6cf3811
+      size: 210146180
+    - path: data/df_test.parquet.gzip
+      md5: 7499367cb650abcc130b9134b87b8247
+      size: 195889
+    - path: data/df_train.parquet.gzip
+      md5: 506176871711ac2a72957dda4eed16c3
+      size: 210011395

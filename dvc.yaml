@@ -1,0 +1,14 @@
+stages:
+  preprocessing:
+    cmd: python adClassifier/preprocessing.py
+    deps:
+    - adClassifier/preprocessing.py
+    - ad_labeling/completions
+    - data/en-US.csv.gz
+    params:
+    - adClassifier/params.yaml:
+      - preprocessing
+    outs:
+    - data/df.parquet.gzip
+    - data/df_test.parquet.gzip
+    - data/df_train.parquet.gzip

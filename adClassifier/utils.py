@@ -6,7 +6,6 @@ import pandas as pd
 from io import StringIO
 from collections import Counter
 
-DATA_FOLDER = Path(".").parent / "data"
 def make_combined_df(path: Path):
     files = path.glob("*.json")
     df = None

@@ -5,6 +5,8 @@ preprocessing:
   completions_folder: /Users/tjpajala/PycharmProjects/adClassifier/ad_labeling/completions
 labeling_functions:
   data_folder: /Users/tjpajala/PycharmProjects/adClassifier/data
+  df_train_file: df_train.parquet.gzip
+  df_test_file: df_test.parquet.gzip
   metrics_folder: metrics_data
   seed: 125
   # labeling functions need to be the same string as the variable name in labeling_functions.py
@@ -12,7 +14,9 @@ labeling_functions:
         "lf_mentions_maga",
         "lf_mentions_bidenharris",
         "lf_mentions_biden",
-        "lf_mentions_stop_republican"
+        "lf_mentions_stop_republican",
+        "lf_mentions_democrat",
+        "lf_mentions_socialis"
   ]
   n_epochs: 500
   log_freq: 100

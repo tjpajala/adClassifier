@@ -1,3 +1,4 @@
+from joblib import dump, load
 import pandas as pd
 import os
 import sys
@@ -38,20 +39,9 @@ n_estimators = params["n_estimators"]
 class_weight = params["class_weight"]
 
 
-
 ABSTAIN = -1
 DEM = 0
 REP = 1
-
-
-df_train = pd.read_parquet(DATA_FOLDER / df_train_filename)
-df_test = pd.read_parquet(DATA_FOLDER / df_test_filename)
-
-print('Number of observations in the training data:', len(df_train))
-print('Number of observations in the test data:', len(df_test))
-print("Classes in train: \n{}".format(df_train.message_label.value_counts()))
-print("Classes in test: \n{}".format(df_test.message_label.value_counts()))
-
 
 @labeling_function()
 def lf_mentions_trump(x):
@@ -107,7 +97,7 @@ def make_L_frames(df_train, df_test, lfs):
 
 
 def run_snorkel_labeller(df_train: pd.DataFrame, df_test: pd.DataFrame, lfs: List[LabelingFunction]) -> \
-        Tuple[RandomForestClassifier, LabelModel, dict, dict, float]:
+        Tuple[RandomForestClassifier, LabelModel, dict, dict, float, CountVectorizer]:
 
     L_train, Y_train, L_test, Y_test = make_L_frames(df_train, df_test, lfs)
     assert np.isnan(L_train).sum(axis=1).max() == 0
@@ -162,29 +152,36 @@ def run_snorkel_labeller(df_train: pd.DataFrame, df_test: pd.DataFrame, lfs: Lis
     precision, recall, thresholds = precision_recall_curve(Y_test, prob_predictions)
     auc = metrics.auc(recall, precision)
     print("Test score AUC: {}".format(auc))
-    return sklearn_model, label_model, preds_train, preds_test, auc
 
+    # save sklearn model
+    dump(sklearn_model, DATA_FOLDER / "models" / "randomforest.model")
 
-sklearn_model, label_model, preds_train, preds_test, auc = run_snorkel_labeller(df_train=df_train, df_test=df_test, lfs=lfs)
+    return sklearn_model, label_model, preds_train, preds_test, auc, vectorizer
 
+def predict(X: np.array) -> np.array:
+    model_file = Path(DATA_FOLDER / "models" / "randomforest.model")
+    if model_file.is_file():
+        # file exists
+        model = load(model_file)
+        return model.predict(X)
+
+    else:
+        raise FileNotFoundError("randomforest.model not found, have you trained it first?")
+
+def log_metrics(auc: float) -> None:
+    # log metrics and params to mlflow
+    log_metric("auc", auc)
+    log_param("n_estimators", n_estimators)
+    log_param("seed", seed)
+    log_param("n_epochs", n_epochs)
+    log_param("log_freq", log_freq)
+    log_param("class_weight", class_weight)
+    return None
 
 def store_results_to_df(df: pd.DataFrame, preds: dict) -> pd.DataFrame:
     df["prob"] = preds["prob"]
     df["predicted_label"] = preds["predicted_label"]
     return df
-# save predictions
-df_train = store_results_to_df(df_train, preds_train)
-df_test = store_results_to_df(df_test, preds_test)
-
-# save results to parquet files
-df_train[["id","predicted_label","prob"]].to_parquet(DATA_FOLDER / "df_train_labeled.parquet.gzip", compression="gzip")
-df_test[["id","predicted_label","prob"]].to_parquet(DATA_FOLDER / "df_test_labeled.parquet.gzip", compression="gzip")
 
 
-# log metrics and params to mlflow
-log_metric("auc",auc)
-log_param("n_estimators", n_estimators)
-log_param("seed", seed)
-log_param("n_epochs", n_epochs)
-log_param("log_freq", log_freq)
-log_param("class_weight", class_weight)
+

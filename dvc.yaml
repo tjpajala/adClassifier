@@ -12,3 +12,18 @@ stages:
     - data/df.parquet.gzip
     - data/df_test.parquet.gzip
     - data/df_train.parquet.gzip
+  main_pipeline:
+    cmd: python adClassifier/main_pipeline.py
+    deps:
+    - adClassifier/main_pipeline.py
+    - data/df_test.parquet.gzip
+    - data/df_train.parquet.gzip
+    params:
+    - adClassifier/params.yaml:
+      - main_pipeline
+    outs:
+    - data/df_test_labeled.parquet.gzip
+    - data/df_train_labeled.parquet.gzip
+    - data/models/label.model
+    - data/models/randomforest.model
+    - data/models/vectorizer.model

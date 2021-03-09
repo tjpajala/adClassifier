@@ -8,6 +8,7 @@ import yaml
 import json
 from tqdm import tqdm
 from collections import Counter
+from sklearn.model_selection import train_test_split
 
 sys.path.append(os.path.relpath("."))
 from adClassifier.utils import get_img_from_html
@@ -15,10 +16,12 @@ from adClassifier.utils import get_img_from_html
 params = yaml.safe_load(open('adClassifier/params.yaml'))['preprocessing']
 DATA_FOLDER = Path(params["data_folder"])
 COMPLETIONS_FOLDER = Path(params["completions_folder"])
+test_percent_size = params['test_percent_size']
 
 print(str(DATA_FOLDER.absolute()))
 
-df = pd.read_csv(str(DATA_FOLDER / "en-US.csv.gz"))# retain only ads that are likely to be political
+df = pd.read_csv(str(DATA_FOLDER / "en-US.csv.gz"))
+# retain only ads that are likely to be political
 df = df.loc[df.political_probability>0.95]
 
 completions = {}
@@ -91,7 +94,7 @@ df_test = df.loc[~df.message_label.isnull(),:]
 df_train = df.loc[df.message_label.isnull(),:]
 print(df.message_label.value_counts())
 
-#df_train, df_test = train_test_split(df, test_size=test_percent_size)
+df_validation, df_test = train_test_split(df_test, test_size=test_percent_size)
 
 print('Number of observations in the training data:', len(df_train))
 print('Number of observations in the test data:', len(df_test))

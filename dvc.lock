@@ -4,8 +4,8 @@ stages:
     cmd: python adClassifier/preprocessing.py
     deps:
     - path: adClassifier/preprocessing.py
-      md5: e73571d2db2edce42a3893810d14572f
-      size: 4491
+      md5: 56ac51940f6aa954b2d17803d642d1ea
+      size: 4601
     - path: ad_labeling/completions
       md5: 451f0a094b7f2adc211e946bcf588bcd.dir
       size: 188685
@@ -25,8 +25,42 @@ stages:
       md5: 59185a8d11e75a7636040e14e6cf3811
       size: 210146180
     - path: data/df_test.parquet.gzip
-      md5: 7499367cb650abcc130b9134b87b8247
-      size: 195889
+      md5: 94b312f36e01ad605dc73c4e836f7ad8
+      size: 113400
     - path: data/df_train.parquet.gzip
       md5: 506176871711ac2a72957dda4eed16c3
       size: 210011395
+  main_pipeline:
+    cmd: python adClassifier/main_pipeline.py
+    deps:
+    - path: adClassifier/main_pipeline.py
+      md5: aafd376f817b5f301233c9f0d01b8588
+      size: 1616
+    - path: data/df_test.parquet.gzip
+      md5: 94b312f36e01ad605dc73c4e836f7ad8
+      size: 113400
+    - path: data/df_train.parquet.gzip
+      md5: 506176871711ac2a72957dda4eed16c3
+      size: 210011395
+    params:
+      adClassifier/params.yaml:
+        main_pipeline:
+          data_folder: /Users/tjpajala/PycharmProjects/adClassifier/data
+          df_train_file: df_train.parquet.gzip
+          df_test_file: df_test.parquet.gzip
+    outs:
+    - path: data/df_test_labeled.parquet.gzip
+      md5: bddc64da086dda5c63bae772749ebd5c
+      size: 4257
+    - path: data/df_train_labeled.parquet.gzip
+      md5: 7aeb01ecbb1e5a02813cc64a5f0ed33b
+      size: 2042261
+    - path: data/models/label.model
+      md5: d6bef2802ca82edb0273c28999ac4a40
+      size: 7141
+    - path: data/models/randomforest.model
+      md5: edb42254b4e4bb931b1953c7396257a1
+      size: 53730156
+    - path: data/models/vectorizer.model
+      md5: 8e426ed7d2c064f87aef6ade90b59ef1
+      size: 15385557

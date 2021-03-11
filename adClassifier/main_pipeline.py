@@ -4,6 +4,7 @@ from joblib import load
 
 sys.path.append(os.path.relpath("."))
 from adClassifier.snorkel_labeller import *
+from adClassifier.models import image_classifier, store_results_to_df
 
 ABSTAIN = -1
 DEM = 0
@@ -33,9 +34,13 @@ print(px)
 # save predictions
 df_train = store_results_to_df(df_train, preds_train, prob_colname="prob_snorkel", pred_colname="label_snorkel")
 df_test = store_results_to_df(df_test, preds_test, prob_colname="prob_snorkel", pred_colname="label_snorkel")
-
-# save results to parquet files
-df_train[["id","label_snorkel","prob_snorkel"]].to_parquet(DATA_FOLDER / "df_train_labeled.parquet.gzip", compression="gzip")
-df_test[["id","label_snorkel","prob_snorkel"]].to_parquet(DATA_FOLDER / "df_test_labeled.parquet.gzip", compression="gzip")
+image_train = image_classifier(df_train)
+image_test = image_classifier(df_test)
+df_train = store_results_to_df(df_train, image_train, prob_colname="prob_image", pred_colname="label_image")
+df_test = store_results_to_df(df_test, image_test, prob_colname="prob_image", pred_colname="label_image")
+# save prediction results to parquet files
+savecols = ["id", "label_snorkel", "prob_snorkel", "prob_image", "label_image"]
+df_train[savecols].to_parquet(DATA_FOLDER / "df_train_labeled.parquet.gzip", compression="gzip")
+df_test[savecols].to_parquet(DATA_FOLDER / "df_test_labeled.parquet.gzip", compression="gzip")
 
 log_metrics(auc)

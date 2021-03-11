@@ -20,7 +20,7 @@ from sklearn.metrics import precision_recall_curve
 import sklearn.metrics as metrics
 
 sys.path.append(os.path.relpath(".."))
-
+from adClassifier.models import store_results_to_df
 
 params = yaml.safe_load(open('adClassifier/params.yaml'))['labeling_functions']
 DATA_FOLDER = Path(params["data_folder"])
@@ -180,11 +180,6 @@ def log_metrics(auc: float) -> None:
     return None
 
 
-def store_results_to_df(df: pd.DataFrame, preds: dict,
-                        prob_colname: str = "prob", pred_colname: str = "predicted_label") -> pd.DataFrame:
-    df[prob_colname] = preds["prob"]
-    df[pred_colname] = preds["predicted_label"]
-    return df
 
 
 

@@ -27,3 +27,14 @@ stages:
     - data/models/label.model
     - data/models/randomforest.model
     - data/models/vectorizer.model
+  labeller_analysis:
+    cmd: jupyter nbconvert notebooks/labeller_analysis.ipynb --to html --execute
+    deps:
+    - data/df_test.parquet.gzip
+    - data/df_test_labeled.parquet.gzip
+    - data/df_train.parquet.gzip
+    - data/df_train_labeled.parquet.gzip
+    - notebooks/labeller_analysis.ipynb
+    params:
+    - adClassifier/params.yaml:
+      - notebook

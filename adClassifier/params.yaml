@@ -28,5 +28,3 @@ main_pipeline:
   df_test_file: df_test.parquet.gzip
 notebook:
   data_folder: data
-  metrics_folder: metrics_data
-  scores_file: all_runs.json

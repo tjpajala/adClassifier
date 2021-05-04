@@ -64,3 +64,25 @@ stages:
     - path: data/models/vectorizer.model
       md5: 4e7c2b2aa3539500cd9f4deaadf2ca57
       size: 15385557
+  labeller_analysis:
+    cmd: jupyter nbconvert notebooks/labeller_analysis.ipynb --to html --execute
+    deps:
+    - path: data/df_test.parquet.gzip
+      md5: f114c211f4008810ef49991461212c1c
+      size: 120266
+    - path: data/df_test_labeled.parquet.gzip
+      md5: 19a8b74fd4036f0835adedb06e5afd33
+      size: 5922
+    - path: data/df_train.parquet.gzip
+      md5: 506176871711ac2a72957dda4eed16c3
+      size: 210011395
+    - path: data/df_train_labeled.parquet.gzip
+      md5: e81a56db43e5ac3286379bd57eca0f80
+      size: 3638536
+    - path: notebooks/labeller_analysis.ipynb
+      md5: b8f064f0c59b6017a6f538a35e6c0ce2
+      size: 3246978
+    params:
+      adClassifier/params.yaml:
+        notebook:
+          data_folder: data
